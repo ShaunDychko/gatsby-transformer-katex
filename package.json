@@ -3,16 +3,16 @@
   "version": "1.0.1",
   "description": "Use katex to process LaTeX found in text.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo \"No build script setup\""
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShaunDychko/gatsby-transformer-katex"
   },
   "keywords": [
     "gatsby",
     "gatsby-plugin"
   ],
   "author": "Shaun Dychko <shaun@checkmarkmedia.com>",
-  "license": "0BSD",
+  "license": "MIT",
   "dependencies": {
     "camel-case": "^4.1.2",
     "katex": "^0.15.1",
