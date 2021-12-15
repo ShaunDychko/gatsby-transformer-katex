@@ -1,49 +1,43 @@
-/**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.com/docs/node-apis/
- */
-// You can delete this file if you're not using it
+const katex = require("katex");
+const lodash = require("lodash");
+const camel = require("camel-case");
 
-/**
- * You can uncomment the following line to verify that
- * your plugin is being loaded in your site.
- *
- * See: https://www.gatsbyjs.com/docs/creating-a-local-plugin/#developing-a-local-plugin-that-is-outside-your-project
- */
 exports.onPreInit = () => console.log("Loaded gatsby-transformer-katex");
 
-exports.onCreateNode = ({ node, actions, reporter, createNodeId }) => {
-  if (node.internal.owner !== "gatsby-source-drupal") {
+exports.onCreateNode = ({ node, actions }, pluginOptions) => {
+  const process = pluginOptions.process || [];
+  const item = process.find((item) => item.type === node.internal.type);
+  if (item) {
+    const { createNodeField } = actions;
+
+    const fields = item.fields || [];
+
+    fields.forEach((field) => {
+      const content = lodash.get(node, field);
+
+      if (content) {
+        // Match only one, unescaped, $ sign delimiting inline math.
+        // See regex at: https://regexr.com/6aaj1
+        const contentProcessed = content.replace(
+          /(?<![\$\\])\${1}(?!\$)(.+?)\${1}/g,
+          (outer, inner) => {
+            return katex.renderToString(inner, {
+              throwOnError: !!pluginOptions.throwOnError,
+            });
+          }
+        );
+
+        createNodeField({
+          node,
+          name: camel.camelCase(`${field}_katex`, {
+            transform: camel.camelCaseTransformMerge,
+          }),
+          value: contentProcessed,
+        });
+      }
+    });
+
     return {};
-  }
-
-  const node_types = ["node__page"];
-  // reporter.info(node);
-
-  if (node_types.includes(node.internal.type)) {
-    const { createNode, createParentChildLink } = actions;
-    // reporter.info(node);
-
-    let content = node.body.processed;
-    console.log(`The content: ${content}`);
-    console.log(node);
-
-    const katexNode = {
-      id: createNodeId(`${node.id} >>> Katex`),
-      children: [],
-      parent: node.id,
-      internal: {
-        contentDigest: `${node.internal.contentDigest}`,
-        type: `Katex`,
-      },
-    };
-
-    katexNode.processedKatex = `${node.body.processed} has been processed!`;
-
-    createNode(katexNode);
-    createParentChildLink({ parent: node, child: katexNode });
-    return katexNode;
   }
 
   return {};
