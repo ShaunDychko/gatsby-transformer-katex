@@ -68,7 +68,7 @@ Which outputs the following:
 }
 ```
 
-The `type` key in the gatsby-transformer-katex configuration is the value of the internal type of the graphQL node. In this example it is `node__article`. Each item in the `fields` array is a [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation) path to the field starting within `data`. In this example the field is `body.processed`. The field can be arbitrarily nested with more dots. This example was created using the [gatsby-source-drupal](https://www.gatsbyjs.com/plugins/gatsby-source-drupal/) source plugin, but any source plugin that assigns an "internal.type" can be used (which is probably all of them?).
+The `type` key in the gatsby-transformer-katex configuration is the value of the internal type of the graphQL node. In this example it is `node__article`. Each item in the `fields` array is a [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation) path to the field starting within the data node. In this example the field is `body.processed`. The field can be arbitrarily nested with more dots. This example was created using the [gatsby-source-drupal](https://www.gatsbyjs.com/plugins/gatsby-source-drupal/) source plugin, but any source plugin that assigns an "internal.type" can be used (which is probably all of them?).
 
 To use the Katex processed version of `body.processed`, adjust the GraphQL query as follows:
 
