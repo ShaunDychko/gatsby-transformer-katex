@@ -1,12 +1,14 @@
+# gatsby-transformer-katex
+
 ## Description
 
-The gatsby-transformer-katex plugin will process any specified text node with the [Katex](https://katex.org/) math typsetting library. This plugin renders any LaTeX enclosed between `$` signs in "inline mode".
+The gatsby-transformer-katex plugin will process any specified text node with the [Katex](https://katex.org/) math typsetting library. This plugin renders any LaTeX enclosed between `$` signs in "inline mode". It is an alternative to the [gatsby-remark-katex](https://www.gatsbyjs.com/plugins/gatsby-remark-katex) plugin since gatsby-remark-katex can process math found only in markdown, whereas gatsby-transformer-katex can process math from any source.
 
 ## Dependencies
 
-* [katex](https://www.npmjs.com/package/katex)
-* [camel-case](https://www.npmjs.com/package/camel-case) To create the new field name that will appear in GraphiQL.
-* [lodash](https://www.npmjs.com/package/lodash) To interpret the "dot notation" path to the GraphQL text node.
+- [katex](https://www.npmjs.com/package/katex)
+- [camel-case](https://www.npmjs.com/package/camel-case) To create the new field name that will appear in GraphiQL.
+- [lodash](https://www.npmjs.com/package/lodash) To interpret the "dot notation" path to the GraphQL text node.
 
 ## How to install
 
@@ -24,15 +26,13 @@ module.exports = {
         process: [
           {
             type: `node__article`,
-            fields: [
-              `body.processed`
-            ]
-          }
-        ]
-      }
-    }
-  ]
-}
+            fields: [`body.processed`],
+          },
+        ],
+      },
+    },
+  ],
+};
 ```
 
 Inspect the GraphiQL output to identify the text node that you wish to process with Katex. Consider data that could be queried with the following:
@@ -90,11 +90,11 @@ Please submit pull requests to the GitHub repository.
 
 ## Tips
 
-* Dollar signs `$` can be escaped with a `\` in order to be ignored by Katex. If you wish to have a `$` literally appear in your text, write it as `\$`.
-* Pay attention to the objects/arrays in the configuration. `process` expects an array of objects. Each object has a `type` and `fields` key. `fields` expects an array of dot notation paths to the fields of interest.
-* There is no need to include `internal { type }` in your graphQL queries. That was shown above just to illustrate the value needed for the `type` key in the configuration.
+- Dollar signs `$` can be escaped with a `\` in order to be ignored by Katex. If you wish to have a `$` literally appear in your text, write it as `\$`.
+- Pay attention to the objects/arrays in the configuration. `process` expects an array of objects. Each object has a `type` and `fields` key. `fields` expects an array of dot notation paths to the fields of interest.
+- There is no need to include `internal { type }` in your graphQL queries. That was shown above just to illustrate the value needed for the `type` key in the configuration.
 
 ## Known limitations
 
-* "display mode" isn't supported. Math is always rendered in "inline" mode.
-* Other delimiters are not supported. Only `$` signs will work.
+- "display mode" isn't supported. Math is always rendered in "inline" mode.
+- Other delimiters are not supported. Only `$` signs will work.
