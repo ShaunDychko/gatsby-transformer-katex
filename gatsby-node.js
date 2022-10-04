@@ -17,14 +17,39 @@ exports.onCreateNode = ({ node, actions }, pluginOptions) => {
 
       if (content) {
         // Match only one, unescaped, $ sign delimiting inline math.
-        // See regex at: https://regexr.com/6aaj1
-        const contentProcessed = content.replace(
-          /(?<![\$\\])\${1}(?!\$)(.+?)\${1}/g,
+        const token = "literal_dollar_sign";
+        const tokenized = content.replace(/\\\$/g, token);
+        const katexProcessed = tokenized.replace(
+          /\$(.+?)\$/g,
           (outer, inner) => {
-            return katex.renderToString(inner, {
-              throwOnError: !!pluginOptions.throwOnError,
-            });
+            // Replace literal dollar sign within latex with escaped
+            // dollar sign \$
+            const tokenReplaced = inner.replace(new RegExp(token, "g"), `\\$`);
+            try {
+              return katex.renderToString(tokenReplaced, {
+                throwOnError: !!pluginOptions.throwOnError,
+                strict: (errorCode, errorMsg, token) => {
+                  console.log(errorCode);
+                  console.log(errorMsg);
+                  console.log(token);
+                  console.log(content);
+                },
+              });
+            } catch (error) {
+              if (error instanceof katex.ParseError) {
+                console.error(error.message);
+              } else {
+                console.log(error);
+              }
+              console.error(content);
+              return tokenReplaced;
+            }
           }
+        );
+        // Replace literal dollar signs outside of latex.
+        const contentProcessed = katexProcessed.replace(
+          new RegExp(token, "g"),
+          `$`
         );
 
         createNodeField({
