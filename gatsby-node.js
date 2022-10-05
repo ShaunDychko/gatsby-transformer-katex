@@ -41,7 +41,7 @@ exports.onCreateNode = ({ node, actions }, pluginOptions) => {
               } else {
                 console.log(error);
               }
-              console.error(content);
+              console.log(content);
               return tokenReplaced;
             }
           }
