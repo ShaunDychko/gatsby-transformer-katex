@@ -26,7 +26,10 @@ module.exports = {
         process: [
           {
             type: `node__article`,
-            fields: [`body.processed`],
+            fields: [
+              `body.processed`,
+              { field_with_array_of_objects: "processed" },
+            ],
           },
         ],
       },
@@ -46,6 +49,9 @@ query MyQuery {
     body {
       processed
     }
+    field_with_array_of_objects {
+      processed
+    }
   }
 }
 ```
@@ -62,13 +68,19 @@ Which outputs the following:
       "body": {
         "processed": "<p>Some text... then some math! $e^{i \pi} = -1$</p>\n"
       }
+      field_with_array_of_objects [
+        {
+          rawValue: "some more text",
+          processed: "some more text"
+        }
+      ]
     }
   },
   "extensions": {}
 }
 ```
 
-The `type` key in the gatsby-transformer-katex configuration is the value of the internal type of the graphQL node. In this example it is `node__article`. Each item in the `fields` array is a [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation) path to the field starting within the data node. In this example the field is `body.processed`. The field can be arbitrarily nested with more dots. This example was created using the [gatsby-source-drupal](https://www.gatsbyjs.com/plugins/gatsby-source-drupal/) source plugin, but any source plugin that assigns an "internal.type" can be used (which is probably all of them?).
+The `type` key in the gatsby-transformer-katex configuration is the value of the internal type of the graphQL node. In this example it is `node__article`. Each item in the `fields` array is a [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation) path to the field starting within the data node, or, if the field contains an array of objects, then the item in the `fields` array is an object where the key is the dot notation path to the field and the value is the property of the object that's within the array. In this example the field is `body.processed`. The field can be arbitrarily nested with more dots. This example was created using the [gatsby-source-drupal](https://www.gatsbyjs.com/plugins/gatsby-source-drupal/) source plugin, but any source plugin that assigns an "internal.type" can be used.
 
 To use the Katex processed version of `body.processed`, adjust the GraphQL query as follows:
 
@@ -77,6 +89,7 @@ query MyQuery {
   nodeArticle {
     fields {
       bodyProcessedKatex
+      fieldWithArrayOfObjects
     }
   }
 }
