@@ -1,6 +1,6 @@
 {
   "name": "gatsby-transformer-katex",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Use katex to process LaTeX found in text.",
   "main": "index.js",
   "repository": {
